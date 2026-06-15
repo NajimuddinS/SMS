@@ -31,10 +31,12 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070a13] text-slate-100 flex flex-col md:flex-row font-sans">
+    <div className="relative min-h-screen md:h-screen md:overflow-hidden bg-[#f4f6fa] text-slate-800 flex flex-col md:flex-row font-sans">
       {/* Visual background ambient glow circles for premium styling */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none animate-pulse-slow"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none animate-pulse-slow"></div>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-500/8 blur-[120px] animate-pulse-slow"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-500/8 blur-[120px] animate-pulse-slow"></div>
+      </div>
 
       {/* Sidebar Navigation */}
       <Sidebar
@@ -45,7 +47,7 @@ function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-h-0 relative z-10">
-        {currentView === 'dashboard' && <AnalyticsDashboard />}
+        {currentView === 'dashboard' && <AnalyticsDashboard refreshTrigger={refreshTrigger} />}
         
         {currentView === 'students' && (
           <StudentList

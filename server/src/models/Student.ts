@@ -60,7 +60,7 @@ const StudentSchema = new Schema<IStudent>(
       type: String,
       required: [true, 'Mobile number is required'],
       trim: true,
-      match: [/^\+?[0-9\s-]{8,15}$/, 'Please fill a valid mobile number'],
+      match: [/^[0-9]{10}$/, 'Mobile number must be exactly 10 digits'],
     },
     gender: {
       type: String,

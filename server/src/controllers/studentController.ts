@@ -110,9 +110,9 @@ export const createStudent = async (req: Request, res: Response): Promise<void> 
     }
 
     // Mobile validation
-    const mobileRegex = /^\+?[0-9\s-]{8,15}$/;
+    const mobileRegex = /^[0-9]{10}$/;
     if (!mobileRegex.test(mobileNumber)) {
-      sendValidationError(res, 'Please enter a valid mobile number (8-15 digits).');
+      sendValidationError(res, 'Please enter a valid 10-digit mobile number.');
       return;
     }
 
@@ -204,9 +204,9 @@ export const updateStudent = async (req: Request, res: Response): Promise<void> 
     }
 
     // Mobile validation
-    const mobileRegex = /^\+?[0-9\s-]{8,15}$/;
+    const mobileRegex = /^[0-9]{10}$/;
     if (!mobileRegex.test(mobileNumber)) {
-      sendValidationError(res, 'Please enter a valid mobile number (8-15 digits).');
+      sendValidationError(res, 'Please enter a valid 10-digit mobile number.');
       return;
     }
 

@@ -4,7 +4,7 @@ import type { AnalyticsData, ActivityLog } from '../services/api';
 
 import { Users, GraduationCap, Clock, Award, TrendingUp, Info } from 'lucide-react';
 
-export const AnalyticsDashboard: React.FC = () => {
+export const AnalyticsDashboard: React.FC<{ refreshTrigger: number }> = ({ refreshTrigger }) => {
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [recentLogs, setRecentLogs] = useState<ActivityLog[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,7 +30,8 @@ export const AnalyticsDashboard: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [refreshTrigger]);
+
 
   if (loading) {
     return (
@@ -75,59 +76,59 @@ export const AnalyticsDashboard: React.FC = () => {
     <div className="flex-1 p-6 md:p-8 overflow-y-auto max-w-7xl mx-auto w-full flex flex-col gap-8">
       {/* Welcome Header */}
       <div>
-        <h2 className="text-3xl font-extrabold text-white tracking-tight">Administrative Overview</h2>
-        <p className="text-slate-400 text-sm mt-1">Real-time statistics, demographics, and operations log.</p>
+        <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Administrative Overview</h2>
+        <p className="text-slate-500 text-sm mt-1">Real-time statistics, demographics, and operations log.</p>
       </div>
 
       {/* Stats Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Total Students */}
         <div className="glass-card p-5 rounded-2xl flex items-center gap-4 glow-indigo">
-          <div className="p-3.5 bg-indigo-600/20 text-indigo-400 rounded-xl border border-indigo-500/30">
+          <div className="p-3.5 bg-indigo-50 text-indigo-600 rounded-xl border border-indigo-100/80">
             <Users size={24} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Enrollment</p>
-            <h3 className="text-2xl font-extrabold text-white mt-1">{totalStudents}</h3>
-            <p className="text-[11px] text-slate-400 mt-0.5">Active Student Records</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Enrollment</p>
+            <h3 className="text-2xl font-extrabold text-slate-800 mt-1">{totalStudents}</h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">Active Student Records</p>
           </div>
         </div>
 
         {/* Unique Courses */}
         <div className="glass-card p-5 rounded-2xl flex items-center gap-4 glow-purple">
-          <div className="p-3.5 bg-purple-600/20 text-purple-400 rounded-xl border border-purple-500/30">
+          <div className="p-3.5 bg-purple-50 text-purple-600 rounded-xl border border-purple-100/80">
             <GraduationCap size={24} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Active Courses</p>
-            <h3 className="text-2xl font-extrabold text-white mt-1">{courseCount}</h3>
-            <p className="text-[11px] text-slate-400 mt-0.5">Departments Represented</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Courses</p>
+            <h3 className="text-2xl font-extrabold text-slate-800 mt-1">{courseCount}</h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">Departments Represented</p>
           </div>
         </div>
 
         {/* Most Popular Course */}
         <div className="glass-card p-5 rounded-2xl flex items-center gap-4">
-          <div className="p-3.5 bg-emerald-600/20 text-emerald-400 rounded-xl border border-emerald-500/30">
+          <div className="p-3.5 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100/80">
             <Award size={24} />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Top Department</p>
-            <h3 className="text-lg font-extrabold text-white mt-1 truncate" title={popularCourse}>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Top Department</p>
+            <h3 className="text-lg font-extrabold text-slate-800 mt-1 truncate" title={popularCourse}>
               {popularCourse}
             </h3>
-            <p className="text-[11px] text-emerald-400 font-medium mt-0.5">{popularCourseCount} Students</p>
+            <p className="text-[11px] text-emerald-600 font-semibold mt-0.5">{popularCourseCount} Students</p>
           </div>
         </div>
 
         {/* Activity Meter */}
         <div className="glass-card p-5 rounded-2xl flex items-center gap-4">
-          <div className="p-3.5 bg-rose-600/20 text-rose-400 rounded-xl border border-rose-500/30">
+          <div className="p-3.5 bg-rose-50 text-rose-600 rounded-xl border border-rose-100/80">
             <Clock size={24} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Portal Logs</p>
-            <h3 className="text-2xl font-extrabold text-white mt-1">{recentLogs.length}</h3>
-            <p className="text-[11px] text-slate-400 mt-0.5">Recent Operations Listed</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Portal Logs</p>
+            <h3 className="text-2xl font-extrabold text-slate-800 mt-1">{recentLogs.length}</h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">Recent Operations Listed</p>
           </div>
         </div>
       </div>
@@ -137,13 +138,13 @@ export const AnalyticsDashboard: React.FC = () => {
         {/* Year Distribution Chart */}
         <div className="glass-card p-6 rounded-2xl lg:col-span-2 flex flex-col gap-6">
           <div className="flex items-center justify-between">
-            <h4 className="text-base font-bold text-white">Enrollment by Academic Year</h4>
-            <div className="text-[11px] text-slate-400 bg-slate-800/40 px-2.5 py-1 rounded-full border border-slate-700/50 flex items-center gap-1.5">
+            <h4 className="text-base font-bold text-slate-800">Enrollment by Academic Year</h4>
+            <div className="text-[11px] text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100/80 flex items-center gap-1.5">
               <TrendingUp size={12} /> Live Distribution
             </div>
           </div>
 
-          <div className="h-64 flex items-end gap-6 md:gap-12 px-4 border-b border-slate-800 pb-2">
+          <div className="h-64 flex items-end gap-6 md:gap-12 px-4 border-b border-slate-200 pb-2">
             {/* Display years 1 to 4 */}
             {[1, 2, 3, 4].map((yearNum) => {
               const yearRecord = analytics?.yearBreakdown.find((y) => y._id === yearNum);
@@ -160,10 +161,10 @@ export const AnalyticsDashboard: React.FC = () => {
                   {/* Bar */}
                   <div
                     style={{ height: `${percentage}%` }}
-                    className="w-full min-h-[4px] rounded-t-lg bg-gradient-to-t from-indigo-600/80 to-purple-500/80 group-hover:from-indigo-500 group-hover:to-purple-400 transition-all duration-500 glow-indigo"
+                    className="w-full min-h-[4px] rounded-t-lg bg-gradient-to-t from-indigo-500 to-purple-500 group-hover:from-indigo-600 group-hover:to-purple-600 transition-all duration-500 glow-indigo"
                   />
                   {/* Label */}
-                  <span className="text-xs text-slate-400 group-hover:text-white font-medium mt-1">
+                  <span className="text-xs text-slate-500 group-hover:text-slate-800 font-medium mt-1">
                     Year {yearNum}
                   </span>
                 </div>
@@ -175,8 +176,8 @@ export const AnalyticsDashboard: React.FC = () => {
         {/* Gender Demographics Card */}
         <div className="glass-card p-6 rounded-2xl flex flex-col justify-between gap-6">
           <div>
-            <h4 className="text-base font-bold text-white">Gender Demographics</h4>
-            <p className="text-xs text-slate-400 mt-0.5">Diversity and breakdown across enrollment.</p>
+            <h4 className="text-base font-bold text-slate-800">Gender Demographics</h4>
+            <p className="text-xs text-slate-500 mt-0.5">Diversity and breakdown across enrollment.</p>
           </div>
 
           <div className="flex flex-col gap-4">
@@ -193,10 +194,10 @@ export const AnalyticsDashboard: React.FC = () => {
               return (
                 <div key={gender} className="flex flex-col gap-1.5">
                   <div className="flex justify-between text-xs font-semibold">
-                    <span className="text-slate-300">{gender}</span>
-                    <span className="text-slate-400">{count} ({percent}%)</span>
+                    <span className="text-slate-700">{gender}</span>
+                    <span className="text-slate-500">{count} ({percent}%)</span>
                   </div>
-                  <div className="w-full bg-slate-800/60 h-2 rounded-full overflow-hidden border border-slate-700/30">
+                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/50">
                     <div
                       style={{ width: `${percent}%` }}
                       className={`${barColor} h-full rounded-full transition-all duration-1000`}
@@ -207,9 +208,9 @@ export const AnalyticsDashboard: React.FC = () => {
             })}
           </div>
 
-          <div className="border-t border-slate-800/60 pt-4 flex items-center justify-between text-[11px] text-slate-500">
+          <div className="border-t border-slate-200 pt-4 flex items-center justify-between text-[11px] text-slate-400">
             <span>Aggregated database count</span>
-            <span className="font-semibold">{totalStudents} Total</span>
+            <span className="font-semibold text-slate-700">{totalStudents} Total</span>
           </div>
         </div>
       </div>
@@ -219,8 +220,8 @@ export const AnalyticsDashboard: React.FC = () => {
         {/* Course Popularity List */}
         <div className="glass-card p-6 rounded-2xl flex flex-col gap-4">
           <div>
-            <h4 className="text-base font-bold text-white">Enrollment by Course</h4>
-            <p className="text-xs text-slate-400 mt-0.5">Active course enrollment sizes ordered by popularity.</p>
+            <h4 className="text-base font-bold text-slate-800">Enrollment by Course</h4>
+            <p className="text-xs text-slate-500 mt-0.5">Active course enrollment sizes ordered by popularity.</p>
           </div>
 
           <div className="flex flex-col gap-3.5 max-h-72 overflow-y-auto pr-1">
@@ -229,10 +230,10 @@ export const AnalyticsDashboard: React.FC = () => {
               return (
                 <div key={course._id} className="flex flex-col gap-1.5">
                   <div className="flex justify-between text-xs font-medium">
-                    <span className="text-slate-200 truncate pr-4">{course._id}</span>
-                    <span className="text-slate-400 shrink-0">{course.count} ({percent}%)</span>
+                    <span className="text-slate-700 truncate pr-4">{course._id}</span>
+                    <span className="text-slate-500 shrink-0">{course.count} ({percent}%)</span>
                   </div>
-                  <div className="w-full bg-slate-800/40 h-1.5 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
                     <div
                       style={{ width: `${percent}%` }}
                       className="bg-indigo-500/80 h-full rounded-full"
@@ -242,7 +243,7 @@ export const AnalyticsDashboard: React.FC = () => {
               );
             })}
             {courseCount === 0 && (
-              <p className="text-xs text-slate-500 py-4 text-center">No course records available yet.</p>
+              <p className="text-xs text-slate-400 py-4 text-center">No course records available yet.</p>
             )}
           </div>
         </div>
@@ -250,36 +251,36 @@ export const AnalyticsDashboard: React.FC = () => {
         {/* Live Admin Audit Feed */}
         <div className="glass-card p-6 rounded-2xl flex flex-col gap-4">
           <div>
-            <h4 className="text-base font-bold text-white">Administrative Activity Log</h4>
-            <p className="text-xs text-slate-400 mt-0.5">Audit log of student mutations performed.</p>
+            <h4 className="text-base font-bold text-slate-800">Administrative Activity Log</h4>
+            <p className="text-xs text-slate-500 mt-0.5">Audit log of student mutations performed.</p>
           </div>
 
           <div className="flex flex-col gap-3 max-h-72 overflow-y-auto pr-1">
             {recentLogs.map((log) => {
               // Action color formatting
-              let badgeColor = 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20';
-              if (log.action === 'CREATE_STUDENT') badgeColor = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
-              if (log.action === 'DELETE_STUDENT') badgeColor = 'text-rose-400 bg-rose-500/10 border-rose-500/20';
-              if (log.action === 'UPDATE_STUDENT') badgeColor = 'text-amber-400 bg-amber-500/10 border-amber-500/20';
+              let badgeColor = 'text-indigo-600 bg-indigo-50 border-indigo-100/60';
+              if (log.action === 'CREATE_STUDENT') badgeColor = 'text-emerald-600 bg-emerald-50 border-emerald-100/60';
+              if (log.action === 'DELETE_STUDENT') badgeColor = 'text-rose-600 bg-rose-50 border-rose-100/60';
+              if (log.action === 'UPDATE_STUDENT') badgeColor = 'text-amber-600 bg-amber-50 border-amber-100/60';
 
               return (
-                <div key={log._id} className="p-3 bg-slate-800/20 border border-slate-800/60 rounded-xl flex items-start justify-between gap-3 text-xs">
+                <div key={log._id} className="p-3 bg-slate-50/50 border border-slate-200/50 rounded-xl flex items-start justify-between gap-3 text-xs">
                   <div className="flex flex-col gap-1 min-w-0">
                     <span className={`px-2 py-0.5 border rounded-full text-[10px] font-semibold w-max ${badgeColor}`}>
                       {log.action.replace('_', ' ')}
                     </span>
-                    <p className="text-slate-300 font-medium leading-relaxed truncate-2-lines break-all" title={log.details}>
+                    <p className="text-slate-600 font-medium leading-relaxed truncate-2-lines break-all" title={log.details}>
                       {log.details}
                     </p>
                   </div>
-                  <span className="text-[10px] text-slate-500 shrink-0 font-medium">
+                  <span className="text-[10px] text-slate-400 shrink-0 font-medium">
                     {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
               );
             })}
             {recentLogs.length === 0 && (
-              <p className="text-xs text-slate-500 py-4 text-center">No system logs logged yet.</p>
+              <p className="text-xs text-slate-400 py-4 text-center">No system logs logged yet.</p>
             )}
           </div>
         </div>
