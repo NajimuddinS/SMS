@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { api } from '../services/api';
 import type { Student } from '../services/api';
 import { StudentIdCardModal } from './StudentIdCardModal';
+import { getPhotoUrl } from '../utils/url';
 
 import { Search, Filter, Trash2, Edit2, Eye, ChevronLeft, ChevronRight, User, GraduationCap, Calendar, Phone, Mail, MapPin } from 'lucide-react';
 
@@ -112,16 +113,7 @@ export const StudentList: React.FC<StudentListProps> = ({
     }
   };
 
-  // Helper to resolve profile photo URL (local vs Cloudinary)
-  const getPhotoUrl = (url: string) => {
-    if (!url) return '';
-    if (url.startsWith('/uploads')) {
-      const apiBaseUrl = (import.meta.env.VITE_API_URL as string) || 'http://localhost:5000/api';
-      const host = apiBaseUrl.replace('/api', '');
-      return `${host}${url}`;
-    }
-    return url;
-  };
+
 
   const handleSort = (field: string) => {
     if (sortBy === field) {

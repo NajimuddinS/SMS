@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../services/api';
 import type { Student } from '../services/api';
+import { getPhotoUrl } from '../utils/url';
 
 import { X, UploadCloud, AlertCircle, Save } from 'lucide-react';
 
@@ -70,13 +71,7 @@ export const StudentFormModal: React.FC<StudentFormModalProps> = ({
       setAddress(student.address);
 
       if (student.photoUrl) {
-        // Resolve URL (handling local fallback URL)
-        let resolvedUrl = student.photoUrl;
-        if (resolvedUrl.startsWith('/uploads')) {
-          const apiBaseUrl = (import.meta.env.VITE_API_URL as string) || 'http://localhost:5000/api';
-          resolvedUrl = `${apiBaseUrl.replace('/api', '')}${resolvedUrl}`;
-        }
-        setPhotoPreview(resolvedUrl);
+        setPhotoPreview(getPhotoUrl(student.photoUrl));
       } else {
         setPhotoPreview('');
       }

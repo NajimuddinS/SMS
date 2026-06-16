@@ -1,3 +1,5 @@
+import { API_BASE } from '../utils/url';
+
 export interface Student {
   _id: string;
   admissionNumber: string;
@@ -57,8 +59,6 @@ export interface PaginatedResult<T> {
     limit: number;
   };
 }
-
-const API_BASE = (import.meta.env.VITE_API_URL as string) || 'http://localhost:5000/api';
 
 export interface User {
   id: string;

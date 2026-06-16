@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import type { Student } from '../services/api';
 import { X, Mail, Phone, Calendar, MapPin, Printer } from 'lucide-react';
+import { getPhotoUrl } from '../utils/url';
 
 interface StudentIdCardModalProps {
   student: Student | null;
@@ -17,16 +18,7 @@ export const StudentIdCardModal: React.FC<StudentIdCardModalProps> = ({
 
   if (!isOpen || !student) return null;
 
-  // Resolve photo URL (handling local fallback URL)
-  const getPhotoUrl = (url: string) => {
-    if (!url) return '';
-    if (url.startsWith('/uploads')) {
-      const apiBaseUrl = (import.meta.env.VITE_API_URL as string) || 'http://localhost:5000/api';
-      const host = apiBaseUrl.replace('/api', '');
-      return `${host}${url}`;
-    }
-    return url;
-  };
+
 
   // Trigger browser print for the ID card
   const handlePrint = () => {
