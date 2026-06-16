@@ -85,7 +85,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
           </div>
           <div>
             <h1 className="text-2xl font-black text-slate-800 tracking-wide">
-              SMS Academy Portal
+              Pillai Academy Portal
             </h1>
             <p className="text-xs text-slate-400 font-semibold mt-1">
               {isLogin ? 'Sign in to access student management tools' : 'Register a new administrative account'}
