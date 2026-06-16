@@ -39,6 +39,7 @@ export const StudentList: React.FC<StudentListProps> = ({
   // State for active delete confirmation
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deletingName, setDeletingName] = useState<string>('');
+  const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 
   // State for viewing student ID card
   const [viewingStudent, setViewingStudent] = useState<Student | null>(null);
@@ -98,6 +99,7 @@ export const StudentList: React.FC<StudentListProps> = ({
   // Handle student record deletion
   const handleDelete = async (id: string) => {
     try {
+      setDeleteLoading(true);
       const res = await api.deleteStudent(id);
       if (res.success) {
         setDeletingId(null);
@@ -105,6 +107,8 @@ export const StudentList: React.FC<StudentListProps> = ({
       }
     } catch (err: any) {
       alert(err.message || 'Failed to delete student.');
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -410,16 +414,25 @@ export const StudentList: React.FC<StudentListProps> = ({
             </p>
             <div className="flex gap-3 justify-end text-sm">
               <button
+                disabled={deleteLoading}
                 onClick={() => setDeletingId(null)}
-                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold transition-all cursor-pointer"
+                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
               <button
-                onClick={() => handleDelete(deletingId)}
-                className="px-4 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-semibold transition-all cursor-pointer"
+                disabled={deleteLoading}
+                onClick={() => deletingId && handleDelete(deletingId)}
+                className="px-4 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-semibold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[120px]"
               >
-                Confirm Delete
+                {deleteLoading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                    Dropping...
+                  </>
+                ) : (
+                  'Confirm Delete'
+                )}
               </button>
             </div>
           </div>

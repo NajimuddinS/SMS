@@ -1,46 +1,41 @@
 import { Request, Response } from 'express';
-import { Student } from '../models/Student';
+import { pool } from '../config/db';
 
 /**
  * GET /analytics
- * Computes dashboard statistics using MongoDB aggregation pipelines.
+ * Computes dashboard statistics using optimized SQL GROUP BY queries.
  */
 export const getAnalytics = async (req: Request, res: Response): Promise<void> => {
   try {
-    const totalStudents = await Student.countDocuments();
+    const totalResult = await pool.query('SELECT COUNT(*)::int AS count FROM students');
+    const totalStudents = totalResult.rows[0].count;
 
     // Group students by course and count them
-    const courseBreakdown = await Student.aggregate([
-      {
-        $group: {
-          _id: '$course',
-          count: { $sum: 1 },
-        },
-      },
-      { $sort: { count: -1 } },
-    ]);
+    const courseResult = await pool.query(`
+      SELECT course AS "_id", COUNT(*)::int AS count
+      FROM students
+      GROUP BY course
+      ORDER BY count DESC
+    `);
+    const courseBreakdown = courseResult.rows;
 
     // Group students by year of study (1, 2, 3, 4)
-    const yearBreakdown = await Student.aggregate([
-      {
-        $group: {
-          _id: '$year',
-          count: { $sum: 1 },
-        },
-      },
-      { $sort: { _id: 1 } },
-    ]);
+    const yearResult = await pool.query(`
+      SELECT year AS "_id", COUNT(*)::int AS count
+      FROM students
+      GROUP BY year
+      ORDER BY year ASC
+    `);
+    const yearBreakdown = yearResult.rows;
 
     // Group students by gender
-    const genderBreakdown = await Student.aggregate([
-      {
-        $group: {
-          _id: '$gender',
-          count: { $sum: 1 },
-        },
-      },
-      { $sort: { count: -1 } },
-    ]);
+    const genderResult = await pool.query(`
+      SELECT gender AS "_id", COUNT(*)::int AS count
+      FROM students
+      GROUP BY gender
+      ORDER BY count DESC
+    `);
+    const genderBreakdown = genderResult.rows;
 
     res.status(200).json({
       success: true,
