@@ -15,6 +15,8 @@ import {
 } from './controllers/studentController';
 import { getAnalytics } from './controllers/analyticsController';
 import { getActivityLogs } from './controllers/logController';
+import { authMiddleware } from './middleware/auth';
+import { signup, login, getMe } from './controllers/authController';
 
 // Load environment variables
 dotenv.config();
@@ -39,15 +41,20 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static uploaded assets
 app.use('/uploads', express.static(uploadsDir));
 
-// API Routes
-app.get('/api/students', getStudents);
-app.get('/api/students/:id', getStudentById);
-app.post('/api/students', upload.single('photo'), createStudent);
-app.put('/api/students/:id', upload.single('photo'), updateStudent);
-app.delete('/api/students/:id', deleteStudent);
+// Auth Routes
+app.post('/api/auth/signup', signup);
+app.post('/api/auth/login', login);
+app.get('/api/auth/me', authMiddleware as any, getMe as any);
 
-app.get('/api/analytics', getAnalytics);
-app.get('/api/logs', getActivityLogs);
+// API Routes (Protected)
+app.get('/api/students', authMiddleware as any, getStudents);
+app.get('/api/students/:id', authMiddleware as any, getStudentById);
+app.post('/api/students', authMiddleware as any, upload.single('photo'), createStudent);
+app.put('/api/students/:id', authMiddleware as any, upload.single('photo'), updateStudent);
+app.delete('/api/students/:id', authMiddleware as any, deleteStudent);
+
+app.get('/api/analytics', authMiddleware as any, getAnalytics);
+app.get('/api/logs', authMiddleware as any, getActivityLogs);
 
 // Basic health check route
 app.get('/health', (req, res) => {

@@ -1,16 +1,22 @@
 import React from 'react';
 import { LayoutDashboard, Users, History, GraduationCap, PlusCircle } from 'lucide-react';
 
+import type { User } from '../services/api';
+
 interface SidebarProps {
   currentView: 'dashboard' | 'students' | 'logs';
   onViewChange: (view: 'dashboard' | 'students' | 'logs') => void;
   onAddStudentClick: () => void;
+  user: User | null;
+  onLogout: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   currentView,
   onViewChange,
   onAddStudentClick,
+  user,
+  onLogout,
 }) => {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -66,10 +72,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </nav>
       </div>
 
-      {/* Footer Info */}
-      <div className="hidden md:block border-t border-slate-200/80 pt-4 text-center">
-        <p className="text-[11px] text-slate-400">© 2026 Student Management System</p>
-        <p className="text-[10px] text-slate-500 mt-1">v1.0.0 • Verified Secure</p>
+      {/* Footer / User Session Info */}
+      <div className="border-t border-slate-200/80 pt-4 flex flex-col gap-3">
+        {user && (
+          <div className="flex items-center gap-3 px-1">
+            <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-650 font-bold uppercase shrink-0">
+              {user.name.charAt(0)}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-bold text-slate-800 truncate leading-snug">{user.name}</p>
+              <p className="text-[10px] text-slate-400 truncate leading-normal">{user.email}</p>
+            </div>
+          </div>
+        )}
+        <button
+          onClick={onLogout}
+          className="w-full py-2.5 px-4 flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white rounded-xl text-xs font-bold border border-rose-100/80 transition-all cursor-pointer shadow-sm hover:shadow-rose-500/10"
+        >
+          Logout
+        </button>
       </div>
     </aside>
   );

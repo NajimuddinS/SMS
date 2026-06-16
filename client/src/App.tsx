@@ -1,13 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import { StudentList } from './components/StudentList';
 import { StudentFormModal } from './components/StudentFormModal';
 import { ActivityLogs } from './components/ActivityLogs';
-import type { Student } from './services/api';
+import { AuthPage } from './components/AuthPage';
+import { api } from './services/api';
+import type { Student, User } from './services/api';
 
 
 function App() {
+  // Auth State
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(localStorage.getItem('sms_auth_token'));
+  const [authLoading, setAuthLoading] = useState<boolean>(true);
+
   // Navigation & Modal State
   const [currentView, setCurrentView] = useState<'dashboard' | 'students' | 'logs'>('dashboard');
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -30,6 +37,57 @@ function App() {
     setIsFormOpen(true);
   };
 
+  const handleAuthSuccess = (newToken: string, newUser: User) => {
+    localStorage.setItem('sms_auth_token', newToken);
+    setToken(newToken);
+    setUser(newUser);
+    setCurrentView('dashboard');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('sms_auth_token');
+    setToken(null);
+    setUser(null);
+  };
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!token) {
+        setAuthLoading(false);
+        return;
+      }
+
+      try {
+        const res = await api.getMe();
+        if (res.success) {
+          setUser(res.data);
+        } else {
+          handleLogout();
+        }
+      } catch (err) {
+        console.error('Failed to load profile', err);
+        handleLogout();
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
+    loadProfile();
+  }, [token]);
+
+  if (authLoading) {
+    return (
+      <div className="w-screen h-screen flex flex-col items-center justify-center bg-[#f4f6fa] gap-3">
+        <div className="w-10 h-10 border-4 border-indigo-500/10 border-t-indigo-500 rounded-full animate-spin"></div>
+        <span className="text-slate-500 text-sm font-semibold">Initializing secure session...</span>
+      </div>
+    );
+  }
+
+  if (!token || !user) {
+    return <AuthPage onAuthSuccess={handleAuthSuccess} />;
+  }
+
   return (
     <div className="relative min-h-screen md:h-screen md:overflow-hidden bg-[#f4f6fa] text-slate-800 flex flex-col md:flex-row font-sans">
       {/* Visual background ambient glow circles for premium styling */}
@@ -43,6 +101,8 @@ function App() {
         currentView={currentView}
         onViewChange={(view) => setCurrentView(view)}
         onAddStudentClick={handleOpenAddStudent}
+        user={user}
+        onLogout={handleLogout}
       />
 
       {/* Main Content Area */}

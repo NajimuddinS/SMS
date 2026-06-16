@@ -60,11 +60,38 @@ export interface PaginatedResult<T> {
 
 const API_BASE = (import.meta.env.VITE_API_URL as string) || 'http://localhost:5000/api';
 
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  token: string;
+  data: User;
+}
+
 /**
- * Custom fetch wrapper to handle JSON responses and errors
+ * Custom fetch wrapper to handle JSON responses and errors, appending the auth token.
  */
-const fetcher = async <T>(url: string, options?: RequestInit): Promise<T> => {
-  const response = await fetch(url, options);
+const fetcher = async <T>(url: string, options: RequestInit = {}): Promise<T> => {
+  const token = localStorage.getItem('sms_auth_token');
+  const headers = new Headers(options.headers || {});
+  
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+  
+  if (options.body && !(options.body instanceof FormData) && !headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json');
+  }
+
+  const response = await fetch(url, {
+    ...options,
+    headers,
+  });
+  
   const json = await response.json();
   
   if (!response.ok) {
@@ -147,5 +174,23 @@ export const api = {
    */
   getActivityLogs: async (page: number = 1, limit: number = 15): Promise<PaginatedResult<ActivityLog>> => {
     return fetcher<PaginatedResult<ActivityLog>>(`${API_BASE}/logs?page=${page}&limit=${limit}`);
+  },
+
+  signup: async (data: any): Promise<AuthResponse> => {
+    return fetcher<AuthResponse>(`${API_BASE}/auth/signup`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  login: async (data: any): Promise<AuthResponse> => {
+    return fetcher<AuthResponse>(`${API_BASE}/auth/login`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  getMe: async (): Promise<{ success: boolean; data: User }> => {
+    return fetcher<{ success: boolean; data: User }>(`${API_BASE}/auth/me`);
   },
 };
