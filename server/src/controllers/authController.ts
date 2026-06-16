@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { pool } from '../config/db';
 import { AuthRequest } from '../middleware/auth';
+import { logActivity } from '../middleware/logger';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_for_dev_only_123456';
 
@@ -59,6 +60,13 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     // Generate JWT
     const token = generateToken(user.id, user.email);
 
+    // Log this activity
+    await logActivity(
+      req,
+      'USER_SIGNUP',
+      `User ${user.name} (${user.email}) registered successfully`
+    );
+
     res.status(201).json({
       success: true,
       token,
@@ -104,6 +112,13 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     // Generate JWT
     const token = generateToken(user.id, user.email);
+
+    // Log this activity
+    await logActivity(
+      req,
+      'USER_LOGIN',
+      `User ${user.name} (${user.email}) logged in successfully`
+    );
 
     res.status(200).json({
       success: true,
